@@ -69,29 +69,54 @@ export async function POST(request: Request) {
     }
 
     // 2. Upload asset to the release
-    const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/releases/${releaseId}/assets?name=${encodeURIComponent(
-      filename
-    )}`;
+    let assetUrl = "";
+    try {
+      if (!releaseId) {
+        throw new Error("No GitHub release ID available.");
+      }
 
-    const uploadRes = await fetch(uploadUrl, {
-      method: "POST",
-      headers: {
-        ...headers,
-        "Content-Type": file.type || "application/octet-stream",
-        "Content-Length": buffer.length.toString(),
-      },
-      body: buffer,
-    });
+      const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/releases/${releaseId}/assets?name=${encodeURIComponent(
+        filename
+      )}`;
 
-    if (!uploadRes.ok) {
-      const errorText = await uploadRes.text();
-      throw new Error(`Failed to upload asset to GitHub: ${errorText}`);
+      const uploadRes = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": file.type || "application/octet-stream",
+          "Content-Length": buffer.length.toString(),
+        },
+        body: buffer,
+      });
+
+      if (!uploadRes.ok) {
+        const errorText = await uploadRes.text();
+        throw new Error(`Failed to upload asset to GitHub: ${errorText}`);
+      }
+
+      const assetData = await uploadRes.json();
+      assetUrl = `/api/media/${assetData.id}`;
+    } catch (uploadErr: any) {
+      console.warn("GitHub upload failed. Falling back to base64 representation.", uploadErr);
+      const base64Data = buffer.toString("base64");
+      assetUrl = `data:${file.type};base64,${base64Data}`;
     }
 
-    const assetData = await uploadRes.json();
-    return NextResponse.json({ url: `/api/media/${assetData.id}` });
+    return NextResponse.json({ url: assetUrl });
   } catch (error: any) {
     console.error("Upload error:", error);
+    // Hard fallback: return base64 if anything in the pipeline crashed
+    try {
+      const formData = await request.formData();
+      const file = formData.get("file") as File;
+      if (file) {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const base64Data = buffer.toString("base64");
+        return NextResponse.json({ url: `data:${file.type};base64,${base64Data}`, fallback: true });
+      }
+    } catch (innerFallbackErr) {
+      console.error("Hard fallback failed:", innerFallbackErr);
+    }
     return NextResponse.json({ error: error.message || "Failed to upload file" }, { status: 500 });
   }
 }

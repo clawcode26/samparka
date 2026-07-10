@@ -100,31 +100,50 @@ export function ImageCropper({ onImageUploaded }: ImageCropperProps) {
 
     try {
       canvas.toBlob(async (blob) => {
-        if (!blob) {
-          throw new Error("Failed to process image.");
+        try {
+          if (!blob) {
+            throw new Error("Failed to process image.");
+          }
+
+          const formData = new FormData();
+          formData.append("file", blob, selectedFile?.name || "upload.jpg");
+
+          const response = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          // Read response content safely to prevent JSON parsing exceptions on server errors
+          let errMsg = "";
+          let data: any = null;
+          try {
+            const text = await response.text();
+            data = JSON.parse(text);
+          } catch (e) {
+            errMsg = "Server returned an invalid response format.";
+          }
+
+          if (!response.ok) {
+            throw new Error(data?.error || errMsg || "Failed to upload image.");
+          }
+
+          if (!data || !data.url) {
+            throw new Error("No image URL returned from server.");
+          }
+
+          onImageUploaded(data.url);
+          setSelectedFile(null);
+          setImageSrc(null);
+          setCroppedPreview(null);
+        } catch (innerErr: any) {
+          console.error("Inner upload error:", innerErr);
+          setError(innerErr.message || "An error occurred during upload.");
+        } finally {
+          setLoading(false);
         }
-
-        const formData = new FormData();
-        formData.append("file", blob, selectedFile?.name || "upload.jpg");
-
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || "Failed to upload image.");
-        }
-
-        const data = await response.json();
-        onImageUploaded(data.url);
-        setSelectedFile(null);
-        setImageSrc(null);
-        setCroppedPreview(null);
       }, "image/jpeg", 0.95);
     } catch (err: any) {
-      console.error(err);
+      console.error("Outer upload error:", err);
       setError(err.message || "An error occurred during upload.");
       setLoading(false);
     }
