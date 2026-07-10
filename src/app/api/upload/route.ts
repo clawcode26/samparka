@@ -1,14 +1,4 @@
 import { NextResponse } from "next/server";
-import { getAdminDb } from "@/lib/firebaseAdmin";
-import { getStorage } from "firebase-admin/storage";
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-
-// Ensure admin app is initialised (reuse from firebaseAdmin module)
-function getAdminStorage() {
-  // firebaseAdmin.ts already calls initializeApp — just retrieve storage
-  const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!;
-  return getStorage().bucket(storageBucket);
-}
 
 export async function POST(request: Request) {
   try {
@@ -18,23 +8,85 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
+    const token = process.env.GITHUB_TOKEN;
+    const owner = process.env.GITHUB_OWNER || "sampark-media";
+    const repo = process.env.GITHUB_REPO || "biswabani-assets";
+
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = `news-images/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-    const contentType = file.type || "image/jpeg";
+    const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
 
-    // Upload to Firebase Storage via Admin SDK
-    const bucket = getAdminStorage();
-    const fileRef = bucket.file(filename);
+    if (!token) {
+      console.warn("GITHUB_TOKEN is not set.");
+      return NextResponse.json({ error: "Upload not configured." }, { status: 500 });
+    }
 
-    await fileRef.save(buffer, {
-      metadata: { contentType },
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    };
+
+    // 1. Get or create the 'media' release
+    let releaseId: number | null = null;
+    try {
+      const res = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/releases/tags/media`,
+        { headers }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        releaseId = data.id;
+      }
+    } catch (e) {
+      console.error("Error fetching release:", e);
+    }
+
+    if (!releaseId) {
+      const createRes = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/releases`,
+        {
+          method: "POST",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tag_name: "media",
+            name: "Media Assets",
+            body: "Storage for Samparka news portal images",
+            draft: false,
+            prerelease: false,
+          }),
+        }
+      );
+      if (!createRes.ok) {
+        const err = await createRes.text();
+        throw new Error(`Failed to create GitHub release: ${err}`);
+      }
+      const data = await createRes.json();
+      releaseId = data.id;
+    }
+
+    // 2. Upload the asset
+    const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/releases/${releaseId}/assets?name=${encodeURIComponent(filename)}`;
+
+    const uploadRes = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        ...headers,
+        "Content-Type": file.type || "application/octet-stream",
+        "Content-Length": buffer.length.toString(),
+      },
+      body: buffer,
     });
 
-    // Make file publicly readable
-    await fileRef.makePublic();
+    if (!uploadRes.ok) {
+      const err = await uploadRes.text();
+      throw new Error(`Failed to upload to GitHub: ${err}`);
+    }
 
-    // Get the permanent public URL (no auth required — social crawlers can access this)
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
+    const assetData = await uploadRes.json();
+
+    // browser_download_url is the public CDN link — no auth needed for public repos
+    // This is what social crawlers (WhatsApp, Telegram) can freely access
+    const publicUrl: string = assetData.browser_download_url;
 
     return NextResponse.json({ url: publicUrl });
   } catch (error: any) {
