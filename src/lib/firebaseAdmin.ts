@@ -5,7 +5,7 @@
 import { initializeApp, getApps, cert, App } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
-function getAdminApp(): App {
+export function getAdminApp(): App {
   if (getApps().length > 0) {
     return getApps()[0];
   }

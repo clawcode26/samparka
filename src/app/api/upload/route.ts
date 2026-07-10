@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getAdminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb, getAdminApp } from "@/lib/firebaseAdmin";
 import { getStorage } from "firebase-admin/storage";
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 
 // Ensure admin app is initialised (reuse from firebaseAdmin module)
 function getAdminStorage() {
-  // firebaseAdmin.ts already calls initializeApp — just retrieve storage
+  getAdminApp(); // Explicitly initialize the app first
   const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!;
   return getStorage().bucket(storageBucket);
 }
