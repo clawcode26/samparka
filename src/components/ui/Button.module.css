@@ -1,0 +1,60 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 250ms ease-out;
+  padding: 0 var(--space-16);
+  height: 40px;
+  border: none;
+  font-size: 14px;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.primary {
+  background-color: var(--brand-color);
+  color: #ffffff;
+}
+
+.primary:hover:not(:disabled) {
+  background-color: #6a130c;
+}
+
+.secondary {
+  background-color: transparent;
+  color: var(--neutral-900);
+  border: 1px solid var(--neutral-300);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--neutral-100);
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loader {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-left-color: #ffffff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

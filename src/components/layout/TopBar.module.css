@@ -1,0 +1,98 @@
+.topBar {
+  background-color: var(--neutral-900);
+  color: var(--neutral-300);
+  font-size: 11px;
+  border-bottom: 2px solid var(--brand-color);
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ── Row 1: Date + Utility links ── */
+.topRowInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px var(--space-24);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.topBarDate {
+  color: var(--neutral-400);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.topBarLink {
+  color: var(--neutral-400);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition: color 150ms ease-out;
+}
+
+.topBarLink:hover {
+  color: #fff;
+}
+
+.topBarDivider {
+  width: 1px;
+  height: 12px;
+  background: var(--neutral-700);
+}
+
+/* ── Row 2: Breaking badge + Ticker ── */
+.tickerRow {
+  display: flex;
+  align-items: stretch;
+  height: 30px;
+  width: 100%;
+}
+
+.breakingBadge {
+  background: var(--brand-color);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0 var(--space-16);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.tickerWrapper {
+  overflow: hidden;
+  flex: 1 1 0%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.tickerTrack {
+  display: flex;
+  gap: var(--space-48);
+  animation: ticker 28s linear infinite;
+  white-space: nowrap;
+}
+
+.tickerItem {
+  color: var(--neutral-300);
+  font-size: 11px;
+}
+
+.tickerItem a:hover {
+  color: #fff;
+}
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

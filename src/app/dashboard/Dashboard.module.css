@@ -1,0 +1,245 @@
+/* ─── DASHBOARD SHELL ─── */
+.dashboardShell {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--neutral-100);
+  overflow: hidden;
+  font-family: var(--font-body), sans-serif;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 240px;
+  background-color: #fff;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebarHeader {
+  padding: var(--space-24);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.brand {
+  font-family: var(--font-heading), serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--brand-color);
+}
+
+.brand span {
+  color: var(--neutral-900);
+}
+
+.navContainer {
+  padding: var(--space-24) var(--space-16);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.navSectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-bottom: var(--space-8);
+  padding-left: var(--space-12);
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius);
+  color: var(--neutral-700);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 150ms ease;
+}
+
+.navLink svg {
+  color: var(--neutral-500);
+}
+
+.navLink:hover {
+  background-color: var(--neutral-100);
+  color: var(--neutral-900);
+}
+
+.navLink.active {
+  background-color: rgba(139, 26, 16, 0.05); /* very light brand */
+  color: var(--brand-color);
+}
+
+.navLink.active svg {
+  color: var(--brand-color);
+}
+
+.userMenu {
+  padding: var(--space-16);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--brand-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+
+.userRole {
+  font-size: 11px;
+  color: var(--text-light);
+  text-transform: capitalize;
+}
+
+/* ─── MAIN CONTENT ─── */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Important for flex-child truncation */
+}
+
+.topHeader {
+  height: 64px;
+  background-color: #fff;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-32);
+}
+
+.pageTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.contentArea {
+  flex: 1;
+  padding: var(--space-32);
+  overflow-y: auto;
+}
+
+/* ─── COMMON DASHBOARD UI (Tables, Cards) ─── */
+.tableCard {
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.tableHeader {
+  padding: var(--space-16) var(--space-24);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fafafa;
+}
+
+.tableTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: var(--space-12) var(--space-24);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table td {
+  padding: var(--space-16) var(--space-24);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 14px;
+  color: var(--neutral-800);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusDraft {
+  background-color: var(--neutral-100);
+  color: var(--neutral-600);
+}
+
+.statusReview {
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.statusPublished {
+  background-color: #D1FAE5;
+  color: #047857;
+}
+
+.actionBtn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-color);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.actionBtn:hover {
+  text-decoration: underline;
+}

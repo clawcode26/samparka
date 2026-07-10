@@ -1,26 +1,249 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-color: #8B1A10;
+  --brand-light: #f5e8e7;
+  --bg-color: #FDFCFB;
+  --bg-section: #f8f7f5;
+  --text-color: #1C1917;
+  --text-muted: #57534e;
+  --text-light: #78716c;
+  --border-color: rgba(0,0,0,0.12);
+  --border-strong: rgba(0,0,0,0.2);
+
+  --neutral-50: #fafaf9;
+  --neutral-100: #f5f5f4;
+  --neutral-200: #e7e5e4;
+  --neutral-300: #d6d3d1;
+  --neutral-400: #a8a29e;
+  --neutral-700: #44403c;
+  --neutral-800: #292524;
+  --neutral-900: #1c1917;
+
+  --color-success: #15803d;
+  --color-danger: #b91c1c;
+  --color-warning: #b45309;
+
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --space-64: 64px;
+
+  --max-width: 1280px;
+  --reading-width: 760px;
+  --radius: 4px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-body), "Georgia", serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), "Georgia", serif;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--neutral-900);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--brand-color);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-16);
+}
+
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-color);
+  background: var(--brand-light);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--brand-color);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-16);
+  display: inline-block;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: var(--space-16) 0;
+}
+
+/* Premium Tinted News Card Styles */
+.premiumCard {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), border-color 250ms ease, box-shadow 250ms ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.premiumCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.06);
+}
+
+.premiumCardBody {
+  padding: var(--space-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  flex: 1;
+}
+
+.premiumCardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--neutral-900);
+  margin: 0;
+}
+
+.premiumCardDeck {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.premiumCardFooter {
+  background-color: #ffffff;
+  padding: var(--space-16) var(--space-24);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+/* Category-specific color theme classes */
+.themeRed {
+  background-color: #fdf2f2;
+  --theme-color: #8B1A10;
+  --pill-bg: rgba(139, 26, 16, 0.06);
+  --pill-color: #8B1A10;
+}
+
+.themeBlue {
+  background-color: #f0f7ff;
+  --theme-color: #1e40af;
+  --pill-bg: rgba(30, 64, 175, 0.06);
+  --pill-color: #1e40af;
+}
+
+.themePurple {
+  background-color: #faf5ff;
+  --theme-color: #6b21a8;
+  --pill-bg: rgba(107, 33, 168, 0.06);
+  --pill-color: #6b21a8;
+}
+
+.themeGreen {
+  background-color: #f0fdf4;
+  --theme-color: #166534;
+  --pill-bg: rgba(22, 101, 52, 0.06);
+  --pill-color: #166534;
+}
+
+.premiumPill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pill-color);
+  background: var(--pill-bg);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  width: fit-content;
+}
+
+.premiumCard:hover .premiumArrow {
+  background-color: var(--neutral-900) !important;
+  color: #fff !important;
+}
+
+.premiumCardImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Hide Google Translate Banners & Layout Frames */
+.goog-te-banner-frame,
+.goog-te-banner,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-te-tooltip,
+.goog-te-menu-value {
+  display: none !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+body {
+  top: 0 !important;
+}
+.skiptranslate:not(.floating-translate-bar) {
+  display: none !important;
 }

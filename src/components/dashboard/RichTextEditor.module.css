@@ -1,0 +1,206 @@
+.editorContainer {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── RIBBON TOOLBAR ─── */
+.ribbon {
+  display: flex;
+  background-color: #fafafa;
+  border-bottom: 1px solid var(--border-color);
+  padding: 4px;
+}
+
+.ribbonGroup {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-color);
+  padding: 4px 8px;
+  min-height: 72px;
+}
+
+.ribbonGroup:last-child {
+  border-right: none;
+}
+
+.ribbonControls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.ribbonRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ribbonDivider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--border-color);
+  margin: 0 4px;
+}
+
+.ribbonLabel {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: auto;
+  padding-top: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Form Elements inside Ribbon */
+.ribbonSelect {
+  height: 24px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 0 4px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  color: var(--neutral-800);
+}
+
+.ribbonSelect:hover {
+  border-color: var(--border-color);
+  background: #fff;
+}
+
+.ribbonBtn {
+  width: 26px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--neutral-600);
+  cursor: pointer;
+  transition: all 150ms ease;
+  padding: 0;
+}
+
+.ribbonBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ribbonBtn:hover:not(:disabled) {
+  background-color: var(--neutral-200);
+  color: var(--neutral-900);
+}
+
+.ribbonBtn.active {
+  background-color: var(--neutral-200);
+  color: var(--brand-color);
+  border-color: var(--border-color);
+}
+
+/* Dropdown variation (button with little arrow) */
+.ribbonBtnWithArrow {
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+/* ─── EDITOR CONTENT ─── */
+.editorContent {
+  padding: var(--space-24) var(--space-32);
+  min-height: 400px;
+  cursor: text;
+}
+
+/* TipTap Prose Styles */
+.prose {
+  outline: none;
+  font-family: var(--font-body), serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--neutral-900);
+}
+
+.prose p {
+  margin-bottom: 1em;
+}
+
+.prose.isOdia {
+  font-family: var(--font-odia), serif !important;
+  line-height: 1.85 !important;
+}
+
+/* ─── SHOW/HIDE PARAGRAPH MARKS ─── */
+.showMarks p::after,
+.showMarks h2::after,
+.showMarks h3::after,
+.showMarks li::after {
+  content: '¶';
+  color: var(--neutral-300);
+  margin-left: 4px;
+  font-family: var(--font-body), sans-serif;
+  font-weight: normal;
+  display: inline-block;
+  user-select: none;
+}
+
+.prose h2 {
+  font-family: var(--font-heading), serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose h3 {
+  font-family: var(--font-heading), serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+.prose blockquote {
+  border-left: 4px solid var(--brand-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  font-style: italic;
+  color: var(--neutral-700);
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  margin: 1.5em 0;
+}
+
+.prose ul {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+  list-style-type: disc;
+}
+
+.prose ol {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+  list-style-type: decimal;
+}
+
+.prose a {
+  color: var(--brand-color);
+  text-decoration: underline;
+  cursor: pointer;
+}
