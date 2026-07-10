@@ -48,9 +48,9 @@ export function ImageCropper({ onImageUploaded }: ImageCropperProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Target a standard 16:9 landscape aspect ratio
-    const targetWidth = 800;
-    const targetHeight = 450;
+    // Target OG-standard 1200x630 (1.91:1) — perfect for WhatsApp, Twitter, Facebook
+    const targetWidth = 1200;
+    const targetHeight = 630;
     canvas.width = targetWidth;
     canvas.height = targetHeight;
 
@@ -186,7 +186,7 @@ export function ImageCropper({ onImageUploaded }: ImageCropperProps) {
 
             {/* Cropped 16:9 Preview */}
             <div>
-              <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-light)", marginBottom: "4px" }}>16:9 Crop Preview</div>
+              <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-light)", marginBottom: "4px" }}>OG Preview (1200×630)</div>
               <div style={{ position: "relative", width: "100%", height: "180px", overflow: "hidden", border: "1px solid var(--border-color)", borderRadius: "var(--radius)", backgroundColor: "#000" }}>
                 {croppedPreview && (
                   <img
