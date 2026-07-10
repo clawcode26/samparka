@@ -26,7 +26,12 @@ export function Footer() {
             <img src="/clawcode-logo.png" alt="Clawcode Logo" style={{ height: "16px", width: "16px", borderRadius: "3px", objectFit: "contain", display: "inline-block" }} />
             <span style={{ fontSize: "11px", color: "var(--text-light)" }}>Developed by Clawcode, a registered enterprise under MSME, Govt. of India.</span>
           </div>
-          <span style={{ fontSize: "11px", color: "var(--text-light)" }}>Privacy · Terms · Cookie Policy</span>
+          <span style={{ fontSize: "11px", color: "var(--text-light)" }}>
+            Privacy · Terms · Cookie Policy ·{" "}
+            <Link href="/grievance" style={{ color: "var(--neutral-400)", textDecoration: "none" }}>
+              Grievance Redressal
+            </Link>
+          </span>
         </div>
       </div>
     </footer>
