@@ -11,6 +11,8 @@ import { ArrowLeft, Save, Send, Image as ImageIcon, X, Keyboard } from "lucide-r
 import Link from "next/link";
 import Sanscript from "@indic-transliteration/sanscript";
 
+import styles from "../../Dashboard.module.css";
+
 export default function EditArticle() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -131,15 +133,15 @@ export default function EditArticle() {
       }, 1500);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to update article in database.");
+      setError(err.message || "Failed to update article.");
       setSaving(false);
     }
   };
 
   if (loading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: "128px 0" }}>
-        <LoadingSpinner />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+        <LoadingSpinner size={32} />
       </div>
     );
   }
@@ -158,7 +160,7 @@ export default function EditArticle() {
             disabled={saving}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--brand-color)', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: 'var(--radius)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', opacity: saving ? 0.7 : 1 }}
           >
-            <Save size={16} /> {saving ? "Saving..." : "Save Changes"}
+            <Save size={16} /> {saving ? "Saving Changes..." : "Save Changes"}
           </button>
         </div>
       </div>
@@ -175,7 +177,7 @@ export default function EditArticle() {
         </div>
       )}
 
-      {/* Language Toggle Switch (Above Headline) */}
+      {/* Language / Typing Toggle Switch (Above Headline) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'var(--neutral-100)', padding: '6px 12px', borderRadius: 'var(--radius)', width: 'fit-content', border: '1px solid var(--border-color)', marginBottom: '24px' }}>
         <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--neutral-700)', display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Keyboard size={14} /> Typing Script:
@@ -215,7 +217,7 @@ export default function EditArticle() {
         </div>
 
         {/* Row for Category & Custom Tags */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div className={styles.formGrid}>
           <div>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-light)', marginBottom: '8px' }}>
               Category

@@ -10,6 +10,8 @@ import { ArrowLeft, Save, Send, Image as ImageIcon, X, Keyboard } from "lucide-r
 import Link from "next/link";
 import Sanscript from "@indic-transliteration/sanscript";
 
+import styles from "../../Dashboard.module.css";
+
 export default function ComposeArticle() {
   const router = useRouter();
   const { user } = useAuth();
@@ -179,7 +181,7 @@ export default function ComposeArticle() {
         </div>
 
         {/* Row for Category & Custom Tags */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div className={styles.formGrid}>
           <div>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-light)', marginBottom: '8px' }}>
               Category

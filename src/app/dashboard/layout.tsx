@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Dashboard.module.css";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,7 +12,8 @@ import {
   CheckSquare, 
   Users, 
   LogOut,
-  ShieldAlert
+  ShieldAlert,
+  Menu
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -20,6 +21,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { user, role, loading, logout } = useAuth();
@@ -122,8 +124,16 @@ export default function DashboardLayout({
   return (
     <div className={styles.dashboardShell}>
       
+      {/* Backdrop overlay for mobile */}
+      {isSidebarOpen && (
+        <div 
+          className={styles.sidebarBackdrop} 
+          onClick={() => setIsSidebarOpen(false)} 
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className={styles.sidebar}>
+      <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarActive : ''}`}>
         <div className={styles.sidebarHeader}>
           <div className={styles.brand}>Sampark<span>Workspace</span></div>
         </div>
@@ -131,10 +141,18 @@ export default function DashboardLayout({
         <nav className={styles.navContainer}>
           {/* Reporter role sees My Articles & Compose */}
           <div className={styles.navSectionLabel}>Reporter</div>
-          <Link href="/dashboard/reporter" className={`${styles.navLink} ${pathname === '/dashboard/reporter' ? styles.active : ''}`}>
+          <Link 
+            href="/dashboard/reporter" 
+            className={`${styles.navLink} ${pathname === '/dashboard/reporter' ? styles.active : ''}`}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <FileText size={18} /> My Articles
           </Link>
-          <Link href="/dashboard/reporter/compose" className={`${styles.navLink} ${pathname === '/dashboard/reporter/compose' ? styles.active : ''}`}>
+          <Link 
+            href="/dashboard/reporter/compose" 
+            className={`${styles.navLink} ${pathname === '/dashboard/reporter/compose' ? styles.active : ''}`}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <PenSquare size={18} /> Write Article
           </Link>
 
@@ -142,15 +160,27 @@ export default function DashboardLayout({
           {!isReporter && (
             <>
               <div className={styles.navSectionLabel} style={{ marginTop: '16px' }}>Editor</div>
-              <Link href="/dashboard/editor" className={`${styles.navLink} ${pathname === '/dashboard/editor' ? styles.active : ''}`}>
+              <Link 
+                href="/dashboard/editor" 
+                className={`${styles.navLink} ${pathname === '/dashboard/editor' ? styles.active : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+              >
                 <CheckSquare size={18} /> Review Queue
               </Link>
 
               <div className={styles.navSectionLabel} style={{ marginTop: '16px' }}>Manager</div>
-              <Link href="/dashboard/manager" className={`${styles.navLink} ${pathname === '/dashboard/manager' ? styles.active : ''}`}>
+              <Link 
+                href="/dashboard/manager" 
+                className={`${styles.navLink} ${pathname === '/dashboard/manager' ? styles.active : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+              >
                 <Users size={18} /> Staff Directory
               </Link>
-              <Link href="/dashboard/manager/onboard" className={`${styles.navLink} ${pathname === '/dashboard/manager/onboard' ? styles.active : ''}`}>
+              <Link 
+                href="/dashboard/manager/onboard" 
+                className={`${styles.navLink} ${pathname === '/dashboard/manager/onboard' ? styles.active : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+              >
                 <LayoutDashboard size={18} /> Onboard Staff
               </Link>
             </>
@@ -172,7 +202,16 @@ export default function DashboardLayout({
       {/* Main Content Area */}
       <div className={styles.mainContent}>
         <header className={styles.topHeader}>
-          <div className={styles.pageTitle}>Dashboard</div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <button 
+              className={styles.hamburgerBtn} 
+              onClick={() => setIsSidebarOpen(true)}
+              aria-label="Toggle Navigation"
+            >
+              <Menu size={20} />
+            </button>
+            <div className={styles.pageTitle}>Dashboard</div>
+          </div>
           <div className={styles.headerActions}>
             <Link href="/" className={styles.navLink}>
               Exit to Newspaper

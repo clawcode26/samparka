@@ -13,6 +13,9 @@
   background-color: #fafafa;
   border-bottom: 1px solid var(--border-color);
   padding: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
 }
 
 .ribbonGroup {
@@ -21,6 +24,7 @@
   border-right: 1px solid var(--border-color);
   padding: 4px 8px;
   min-height: 72px;
+  flex-shrink: 0;
 }
 
 .ribbonGroup:last-child {
@@ -203,4 +207,11 @@
   color: var(--brand-color);
   text-decoration: underline;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .editorContent {
+    padding: var(--space-12) var(--space-16);
+    min-height: 300px;
+  }
 }
