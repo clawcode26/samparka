@@ -21,10 +21,12 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
         const imageUrl: string | undefined =
           typeof article.imageUrl === "string" && article.imageUrl ? article.imageUrl : undefined;
 
-        // Ensure absolute URL — new uploads are already https://github.com/...
-        // Older /api/media/... entries get prefixed with domain
+        // Ensure absolute URL — new uploads are already https://storage.googleapis...
+        // Older /api/media/... entries get prefixed with domain and suffixed with .jpg for crawlers
         const absoluteImage = imageUrl?.startsWith("http")
           ? imageUrl
+          : imageUrl?.startsWith("/api/media/")
+          ? `https://www.samparka.online${imageUrl}.jpg`
           : imageUrl
           ? `https://www.samparka.online${imageUrl}`
           : DEFAULT_OG_IMAGE;   // ← fallback for articles with no cover

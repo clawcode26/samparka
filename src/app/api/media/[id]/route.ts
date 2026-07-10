@@ -5,7 +5,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    // Strip extensions like .jpg or .png that might be appended for social crawlers
+    const cleanId = (await params).id.replace(/\.(jpg|jpeg|png|webp|gif)$/i, "");
+    
     const token = process.env.GITHUB_TOKEN;
     const owner = process.env.GITHUB_OWNER || "sampark-media";
     const repo = process.env.GITHUB_REPO || "biswabani-assets";
@@ -22,7 +24,7 @@ export async function GET(
 
     // GitHub redirects to the raw asset location (e.g. AWS S3), so we must follow redirects
     const assetRes = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/releases/assets/${id}`,
+      `https://api.github.com/repos/${owner}/${repo}/releases/assets/${cleanId}`,
       { headers, redirect: "follow" }
     );
 
