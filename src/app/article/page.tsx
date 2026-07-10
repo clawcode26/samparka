@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { fetchArticleByIdServer } from "@/lib/firestoreServer";
 import { fetchArticleById, Article } from "@/lib/articleService";
 import { ArticleClient } from "./ArticleClient";
 
@@ -12,20 +13,31 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   if (id) {
     try {
-      const article = await fetchArticleById(id);
+      // Use REST-based server helper — Firebase Client SDK doesn't work in server components
+      const article = await fetchArticleByIdServer(id);
       if (article) {
+        const imageUrl: string | undefined =
+          typeof article.imageUrl === "string" && article.imageUrl ? article.imageUrl : undefined;
+
+        // If the image is a relative /api/media/... URL, make it absolute
+        const absoluteImage = imageUrl?.startsWith("http")
+          ? imageUrl
+          : imageUrl
+          ? `https://www.samparka.online${imageUrl}`
+          : undefined;
+
         return {
           title: `${article.title} | Samparka`,
           description: article.excerpt || "Read the full story on Samparka.",
           openGraph: {
             title: article.title,
             description: article.excerpt || "Read the full story on Samparka.",
-            url: `https://samparka.online/article?id=${id}`,
+            url: `https://www.samparka.online/article?id=${id}`,
             siteName: "Samparka",
-            images: article.imageUrl
+            images: absoluteImage
               ? [
                   {
-                    url: article.imageUrl,
+                    url: absoluteImage,
                     width: 1200,
                     height: 630,
                     alt: article.title,
@@ -38,7 +50,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
             card: "summary_large_image",
             title: article.title,
             description: article.excerpt || "Read the full story on Samparka.",
-            images: article.imageUrl ? [article.imageUrl] : [],
+            images: absoluteImage ? [absoluteImage] : [],
           },
         };
       }
@@ -50,6 +62,13 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title: "Samparka | ସମ୍ପର୍କ – The Voice of Odisha",
     description: "Odisha's most trusted newspaper.",
+    openGraph: {
+      title: "Samparka | ସମ୍ପର୍କ",
+      description: "Odisha's most trusted newspaper.",
+      url: "https://www.samparka.online",
+      siteName: "Samparka",
+      type: "website",
+    },
   };
 }
 
