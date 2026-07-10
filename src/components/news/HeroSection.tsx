@@ -254,7 +254,7 @@ export function HeroSection() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          const url = `https://samparka.online/article?id=${a.id}`;
+                          const url = `https://www.samparka.online/article?id=${a.id}`;
                           navigator.clipboard.writeText(url);
                           alert("Link copied to clipboard!");
                         }}
@@ -296,14 +296,6 @@ export function HeroSection() {
                 </div>
               </div>
             ))}
-            
-            <div className={styles.weatherWidget}>
-              <div className={styles.weatherCity}>Bhubaneswar</div>
-              <div className={styles.weatherTemp}>
-                41<span className={styles.weatherUnit}>°C</span>
-              </div>
-              <div className={styles.weatherDesc}>Partly cloudy · Humidity 67% · Pre-monsoon</div>
-            </div>
           </aside>
 
         </div>
