@@ -34,7 +34,12 @@ export async function GET(
       });
     }
 
-    const contentType = assetRes.headers.get("content-type") || "application/octet-stream";
+    let contentType = assetRes.headers.get("content-type");
+    if (!contentType || contentType === "application/octet-stream") {
+      // Force an image content type, otherwise WhatsApp/Facebook reject the file!
+      contentType = "image/jpeg";
+    }
+    
     const buffer = Buffer.from(await assetRes.arrayBuffer());
 
     return new Response(buffer, {
