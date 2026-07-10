@@ -5,6 +5,7 @@ import { BreakingBar } from "@/components/layout/BreakingBar";
 import { NavBar } from "@/components/layout/NavBar";
 import { Footer } from "@/components/layout/Footer";
 import { Mail, Clock, FileText, CheckCircle } from "lucide-react";
+import { GrievanceForm } from "./GrievanceForm";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -46,8 +47,8 @@ export default function GrievancePage() {
                 </div>
                 <h3 className={styles.processTitle}>Submit</h3>
                 <p className={styles.processDesc}>
-                  Email us your complaint with a clear description of the issue and a link to the
-                  relevant article if applicable.
+                  Fill out the form with a clear description of the issue and a link to the relevant
+                  article if applicable.
                 </p>
               </div>
               <div className={styles.processCard}>
@@ -129,121 +130,11 @@ export default function GrievancePage() {
                     processing.
                   </p>
                 </div>
-
-                <div className={styles.policyBlock}>
-                  <h3 className={styles.policyHeading}>Escalation</h3>
-                  <p className={styles.policyText}>
-                    If you are not satisfied with our response, you may escalate the matter to the
-                    Press Council of India or approach appropriate regulatory authorities as provided
-                    under applicable law.
-                  </p>
-                </div>
               </div>
 
-              {/* Contact form side */}
+              {/* Contact form side — client component */}
               <div className={styles.formCol}>
-                <div className={styles.formCard}>
-                  <h2 className={styles.formHeading}>Submit a grievance</h2>
-                  <p className={styles.formSubtitle}>
-                    Fill out the form below or email us directly. All submissions are treated
-                    confidentially.
-                  </p>
-                  <form
-                    id="grievance-form"
-                    action={`mailto:clawcode66@gmail.com?subject=Grievance%20Submission`}
-                    method="get"
-                    className={styles.form}
-                  >
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="grievance-name" className={styles.label}>
-                        Full name
-                      </label>
-                      <input
-                        id="grievance-name"
-                        name="name"
-                        type="text"
-                        className={styles.input}
-                        placeholder="Your name"
-                        required
-                      />
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="grievance-email" className={styles.label}>
-                        Email address
-                      </label>
-                      <input
-                        id="grievance-email"
-                        name="email"
-                        type="email"
-                        className={styles.input}
-                        placeholder="you@example.com"
-                        required
-                      />
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="grievance-type" className={styles.label}>
-                        Type of grievance
-                      </label>
-                      <select
-                        id="grievance-type"
-                        name="type"
-                        className={styles.select}
-                        required
-                      >
-                        <option value="">Select a category</option>
-                        <option value="factual-error">Factual inaccuracy</option>
-                        <option value="correction">Correction / clarification request</option>
-                        <option value="privacy">Privacy concern</option>
-                        <option value="editorial">Editorial conduct</option>
-                        <option value="copyright">Copyright dispute</option>
-                        <option value="harmful-content">Offensive or harmful content</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="grievance-article" className={styles.label}>
-                        Article link <span className={styles.optional}>(if applicable)</span>
-                      </label>
-                      <input
-                        id="grievance-article"
-                        name="article"
-                        type="url"
-                        className={styles.input}
-                        placeholder="https://www.samparka.online/article?id=..."
-                      />
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="grievance-message" className={styles.label}>
-                        Description
-                      </label>
-                      <textarea
-                        id="grievance-message"
-                        name="body"
-                        className={styles.textarea}
-                        rows={5}
-                        placeholder="Describe your grievance in detail. Please be as specific as possible."
-                        required
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      id="grievance-submit"
-                      className={styles.submitBtn}
-                    >
-                      Submit via email
-                    </button>
-
-                    <p className={styles.formNote}>
-                      Clicking submit will open your default email client pre-filled with your
-                      submission.
-                    </p>
-                  </form>
-                </div>
+                <GrievanceForm />
               </div>
             </div>
           </div>

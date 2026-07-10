@@ -13,7 +13,8 @@ import {
   Users, 
   LogOut,
   ShieldAlert,
-  Menu
+  Menu,
+  MessageSquare
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -182,6 +183,13 @@ export default function DashboardLayout({
                 onClick={() => setIsSidebarOpen(false)}
               >
                 <LayoutDashboard size={18} /> Onboard Staff
+              </Link>
+              <Link 
+                href="/dashboard/manager/grievances" 
+                className={`${styles.navLink} ${pathname === '/dashboard/manager/grievances' ? styles.active : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+              >
+                <MessageSquare size={18} /> Grievances
               </Link>
             </>
           )}
