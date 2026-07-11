@@ -99,52 +99,45 @@ export function ImageCropper({ onImageUploaded }: ImageCropperProps) {
     setError("");
 
     try {
-      canvas.toBlob(async (blob) => {
-        try {
-          if (!blob) {
-            throw new Error("Failed to process image.");
-          }
+      // Wrap toBlob in a Promise so async/await and try/catch work correctly.
+      // The old callback style meant errors were invisible and setLoading never ran.
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", 0.92)
+      );
 
-          const formData = new FormData();
-          formData.append("file", blob, selectedFile?.name || "upload.jpg");
+      if (!blob) throw new Error("Failed to process image canvas.");
 
-          const response = await fetch("/api/upload", {
-            method: "POST",
-            body: formData,
-          });
+      const formData = new FormData();
+      formData.append("file", blob, selectedFile?.name || "upload.jpg");
 
-          // Read response content safely to prevent JSON parsing exceptions on server errors
-          let errMsg = "";
-          let data: any = null;
-          try {
-            const text = await response.text();
-            data = JSON.parse(text);
-          } catch (e) {
-            errMsg = "Server returned an invalid response format.";
-          }
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-          if (!response.ok) {
-            throw new Error(data?.error || errMsg || "Failed to upload image.");
-          }
+      let data: any = null;
+      try {
+        const text = await response.text();
+        data = JSON.parse(text);
+      } catch (_) {
+        throw new Error("Server returned an invalid response.");
+      }
 
-          if (!data || !data.url) {
-            throw new Error("No image URL returned from server.");
-          }
+      if (!response.ok) {
+        throw new Error(data?.error || `Upload failed (${response.status})`);
+      }
 
-          onImageUploaded(data.url);
-          setSelectedFile(null);
-          setImageSrc(null);
-          setCroppedPreview(null);
-        } catch (innerErr: any) {
-          console.error("Inner upload error:", innerErr);
-          setError(innerErr.message || "An error occurred during upload.");
-        } finally {
-          setLoading(false);
-        }
-      }, "image/jpeg", 0.95);
+      if (!data?.url) throw new Error("No image URL returned from server.");
+
+      onImageUploaded(data.url);
+      setSelectedFile(null);
+      setImageSrc(null);
+      setCroppedPreview(null);
     } catch (err: any) {
-      console.error("Outer upload error:", err);
-      setError(err.message || "An error occurred during upload.");
+      console.error("Upload error:", err);
+      setError(err.message || "Upload failed. Please try again.");
+    } finally {
+      // Always reset loading so page never gets stuck blank
       setLoading(false);
     }
   };
