@@ -8,10 +8,10 @@ import { BreakingBar } from "@/components/layout/BreakingBar";
 import { NavBar } from "@/components/layout/NavBar";
 import { Footer } from "@/components/layout/Footer";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { fetchArticleById, fetchArticles, Article } from "@/lib/articleService";
+import { fetchArticleById, fetchArticles, incrementViewCount, Article } from "@/lib/articleService";
 import styles from "./Article.module.css";
 import Link from "next/link";
-import { Calendar, Eye, Share2, Tag, User } from "lucide-react";
+import { Eye, Share2, Tag } from "lucide-react";
 
 export function ArticleClient({ initialArticle }: { initialArticle: Article | null }) {
   const searchParams = useSearchParams();
@@ -21,6 +21,8 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
   const [article, setArticle] = useState<Article | null>(initialArticle);
   const [related, setRelated] = useState<Article[]>([]);
   const [loading, setLoading] = useState(!initialArticle);
+  // Local view count shown immediately (optimistic +1)
+  const [viewCount, setViewCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!articleId && !articleUrl) {
@@ -34,6 +36,15 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
           const data = await fetchArticleById(articleId!);
           if (data) {
             setArticle(data);
+            // Show optimistic count (+1 for the current visit)
+            setViewCount((data.reads ?? 0) + 1);
+
+            // Only count once per browser session per article
+            const sessionKey = `viewed_${articleId}`;
+            if (!sessionStorage.getItem(sessionKey)) {
+              sessionStorage.setItem(sessionKey, "1");
+              await incrementViewCount(articleId!);
+            }
           }
         } else if (articleUrl) {
           const response = await fetch(`/api/article-fetch?url=${encodeURIComponent(articleUrl!)}`);
@@ -150,6 +161,13 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
                     })}
                   </span>
                 </div>
+                {/* View count */}
+                {viewCount !== null && (
+                  <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "5px", fontSize: "13px", color: "var(--text-light)", fontWeight: 500 }}>
+                    <Eye size={14} />
+                    {viewCount.toLocaleString("en-IN")} views
+                  </div>
+                )}
               </div>
 
               {/* Share Button Row */}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "../Dashboard.module.css";
 import Link from "next/link";
-import { Plus, Edit2, Trash } from "lucide-react";
+import { Plus, Edit2, Trash, Eye } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { fetchArticles, deleteArticle, Article } from "@/lib/articleService";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -77,7 +77,8 @@ export default function ReporterDashboard() {
                 <th>Image</th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Last Modified</th>
+                <th>Views</th>
+                <th>Published</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -102,6 +103,12 @@ export default function ReporterDashboard() {
                     </span>
                   </td>
                   <td>{new Date(article.publishedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td>
+                  <td>
+                    <div style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "13px", color: "var(--text-light)", fontWeight: 500 }}>
+                      <Eye size={13} />
+                      {(article.reads ?? 0).toLocaleString("en-IN")}
+                    </div>
+                  </td>
                   <td>
                     <div style={{ display: "flex", gap: "12px" }}>
                       <Link 

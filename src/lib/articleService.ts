@@ -9,7 +9,8 @@ import {
   deleteDoc, 
   query, 
   where, 
-  orderBy 
+  orderBy,
+  increment
 } from "firebase/firestore";
 
 export interface Article {
@@ -105,6 +106,17 @@ export async function createArticle(article: Omit<Article, "id" | "reads">): Pro
 export async function togglePinArticle(id: string, pinned: boolean): Promise<void> {
   const docRef = doc(db, "articles", id);
   await updateDoc(docRef, { pinned });
+}
+
+/** Atomically increments the view count for an article by 1. */
+export async function incrementViewCount(id: string): Promise<void> {
+  try {
+    const docRef = doc(db, "articles", id);
+    await updateDoc(docRef, { reads: increment(1) });
+  } catch (err) {
+    // Non-critical — don't surface to the user
+    console.warn("Failed to increment view count:", err);
+  }
 }
 
 export async function deleteArticle(id: string): Promise<void> {
