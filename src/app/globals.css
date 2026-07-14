@@ -247,3 +247,7 @@ body {
 .skiptranslate:not(.floating-translate-bar) {
   display: none !important;
 }
+
+/* Custom Translation Override for specific word "Boudh" */
+html.translated-ltr .boudh-wrapper .odia-text { display: none !important; }
+html.translated-ltr .boudh-wrapper .eng-text { display: inline !important; }

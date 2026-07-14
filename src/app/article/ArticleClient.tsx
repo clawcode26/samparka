@@ -173,12 +173,24 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
               {/* Share Button Row */}
               <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBlock: "16px", paddingBlock: "8px", borderTop: "1px solid var(--border-color)", borderBottom: "1px solid var(--border-color)" }}>
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     const shareUrl = articleId 
                       ? `https://samparka.online/article?id=${articleId}`
                       : `https://samparka.online/article?url=${encodeURIComponent(articleUrl || "")}`;
-                    navigator.clipboard.writeText(shareUrl);
-                    alert("Article link copied to clipboard!");
+                    
+                    if (navigator.share) {
+                      try {
+                        await navigator.share({
+                          title: article.title,
+                          url: shareUrl
+                        });
+                      } catch (err) {
+                        console.error("Error sharing:", err);
+                      }
+                    } else {
+                      navigator.clipboard.writeText(shareUrl);
+                      alert("Article link copied to clipboard!");
+                    }
                   }}
                   translate="no"
                   style={{ border: "none", background: "var(--neutral-100)", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", padding: "6px 12px", borderRadius: "9999px", color: "var(--neutral-800)", fontSize: "12px", fontWeight: 600 }}
@@ -200,7 +212,7 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
               {/* Render dynamic HTML content safely */}
               <div 
                 className={styles.articleBody}
-                dangerouslySetInnerHTML={{ __html: article.content }}
+                dangerouslySetInnerHTML={{ __html: article.content.replace(/ବୌଦ୍ଧ/g, '<span class="boudh-wrapper"><span class="odia-text">ବୌଦ୍ଧ</span><span class="eng-text" translate="no">Boudh</span></span>') }}
               />
 
               {/* Tag display under the story */}
