@@ -1,0 +1,140 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 64px 24px;
+}
+
+.card {
+  max-width: 560px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 16px;
+  padding: 48px 40px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.iconRow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--brand-light, #fdf2f2);
+  color: var(--brand-color, #8b1a10);
+  margin-bottom: 24px;
+}
+
+.title {
+  font-family: var(--font-heading), "Playfair Display", serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--neutral-900, #111827);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.odiaSubtitle {
+  font-family: var(--font-odia), "Noto Sans Oriya", sans-serif;
+  font-size: 14px;
+  color: var(--text-light, #6b7280);
+  margin-top: 4px;
+}
+
+.divider {
+  width: 48px;
+  height: 3px;
+  background: var(--brand-color, #8b1a10);
+  border-radius: 2px;
+  margin: 28px auto;
+}
+
+.heading {
+  font-family: var(--font-heading), "Playfair Display", serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--neutral-900, #111827);
+  margin: 0 0 12px 0;
+}
+
+.description {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-light, #6b7280);
+  margin: 0 0 28px 0;
+}
+
+.badgeRow {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-color, #8b1a10);
+  background: var(--brand-light, #fdf2f2);
+  padding: 6px 14px;
+  border-radius: 9999px;
+}
+
+.contactBlock {
+  font-size: 13px;
+  color: var(--text-light, #6b7280);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  padding-top: 20px;
+  margin: 0;
+}
+
+.email {
+  display: inline-block;
+  margin-top: 4px;
+  font-weight: 600;
+  color: var(--brand-color, #8b1a10);
+  text-decoration: none;
+}
+
+.email:hover {
+  text-decoration: underline;
+}
+
+.devBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  font-size: 11px;
+  color: var(--text-light, #6b7280);
+}
+
+.devLogo {
+  height: 24px;
+  width: 24px;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 32px 24px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .heading {
+    font-size: 18px;
+  }
+}

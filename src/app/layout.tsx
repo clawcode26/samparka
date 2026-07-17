@@ -63,7 +63,7 @@ export default function RootLayout({
       className={`${playfair.variable} ${sourceSerif.variable} ${notoSansOriya.variable}`}
       suppressHydrationWarning
     >
-      <body>
+      <body suppressHydrationWarning>
         <AuthProvider>
           <LanguageProvider>
             {children}

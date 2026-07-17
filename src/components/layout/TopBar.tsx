@@ -1,15 +1,22 @@
 "use client";
+import { useState, useEffect } from "react";
 import styles from "./TopBar.module.css";
 import Link from "next/link";
 
 export function TopBar() {
-  const now = new Date();
-  const dateStr = now.toLocaleDateString("en-IN", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const [dateStr, setDateStr] = useState("");
+
+  useEffect(() => {
+    const now = new Date();
+    setDateStr(
+      now.toLocaleDateString("en-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    );
+  }, []);
 
   return (
     <div className={styles.topBar}>

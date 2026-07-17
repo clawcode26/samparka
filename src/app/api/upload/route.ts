@@ -43,8 +43,8 @@ export async function POST(request: Request) {
     // Make file publicly readable
     await fileRef.makePublic();
 
-    // Get the permanent public URL (no auth required — social crawlers can access this)
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
+    // Use the firebasestorage.googleapis.com format — works reliably with all bucket configs
+    const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(filename)}?alt=media`;
 
     return NextResponse.json({ url: publicUrl });
   } catch (error: any) {
