@@ -15,10 +15,8 @@ export default function Home() {
   if (MAINTENANCE_MODE) {
     return (
       <>
-        <TopBar />
         <Masthead />
         <ComingSoon />
-        <Footer />
       </>
     );
   }

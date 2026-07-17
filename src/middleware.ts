@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// ============================================
+// TOGGLE THIS: set to false to bring the site back
+// ============================================
+const MAINTENANCE_MODE = true;
+
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get('host') || '';
@@ -8,8 +13,14 @@ export function middleware(request: NextRequest) {
   // Redirect naked domain to www subdomain on production
   if (hostname === 'samparka.online') {
     url.hostname = 'www.samparka.online';
-    url.port = ''; // Clear port if any
+    url.port = '';
     return NextResponse.redirect(url, 301);
+  }
+
+  // During maintenance, block all routes except the homepage
+  if (MAINTENANCE_MODE && url.pathname !== '/') {
+    url.pathname = '/';
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
