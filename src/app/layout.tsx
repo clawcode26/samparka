@@ -62,6 +62,7 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${sourceSerif.variable} ${notoSansOriya.variable}`}
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
     >
       <body suppressHydrationWarning>
         <AuthProvider>

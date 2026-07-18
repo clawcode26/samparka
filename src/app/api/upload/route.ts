@@ -12,7 +12,7 @@ function getHeaders() {
   };
 }
 
-async function getOrCreateRelease(): Promise<{ uploadUrl: string; releaseId: number }> {
+async function getOrCreateRelease(): Promise<{ uploadUrl: string }> {
   const owner = process.env.GITHUB_OWNER!;
   const repo = process.env.GITHUB_REPO!;
   const tag = "media-assets";
@@ -26,7 +26,7 @@ async function getOrCreateRelease(): Promise<{ uploadUrl: string; releaseId: num
 
   if (listRes.ok) {
     const release = await listRes.json();
-    return { uploadUrl: release.upload_url, releaseId: release.id };
+    return { uploadUrl: release.upload_url };
   }
 
   // Create the release
@@ -43,11 +43,12 @@ async function getOrCreateRelease(): Promise<{ uploadUrl: string; releaseId: num
   });
 
   if (!createRes.ok) {
-    throw new Error(`Failed to create release: ${createRes.statusText}`);
+    const err = await createRes.text();
+    throw new Error(`Failed to create release: ${createRes.status} ${err}`);
   }
 
   const release = await createRes.json();
-  return { uploadUrl: release.upload_url, releaseId: release.id };
+  return { uploadUrl: release.upload_url };
 }
 
 export async function POST(request: Request) {
@@ -62,28 +63,26 @@ export async function POST(request: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-    const contentType = file.type || "image/jpeg";
 
-    // Upload asset to the release using multipart form data (required by GitHub API)
-    const uploadFormData = new FormData();
-    uploadFormData.append("file", new Blob([buffer], { type: contentType }), filename);
-
+    // GitHub expects raw binary with application/octet-stream content type
+    // and name as a query parameter
     const assetRes = await fetch(
       `${uploadUrl}?name=${encodeURIComponent(filename)}`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          "Content-Type": "application/octet-stream",
           "X-GitHub-Api-Version": "2022-11-28",
         },
-        body: uploadFormData,
+        body: buffer,
       }
     );
 
     if (!assetRes.ok) {
       const errText = await assetRes.text();
-      console.error("GitHub asset upload failed:", errText);
-      throw new Error(`GitHub upload failed: ${assetRes.statusText}`);
+      console.error("GitHub asset upload failed:", assetRes.status, errText);
+      throw new Error(`GitHub upload failed: ${assetRes.status} ${errText}`);
     }
 
     const asset = await assetRes.json();
