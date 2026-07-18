@@ -254,7 +254,10 @@ export function RichTextEditor({
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        link: false,
+        underline: false,
+      }),
       Image,
       Underline,
       TextStyle,
@@ -276,6 +279,7 @@ export function RichTextEditor({
         types: ['heading', 'paragraph'],
       }),
     ],
+    immediatelyRender: true,
     content,
     editorProps: {
       attributes: {

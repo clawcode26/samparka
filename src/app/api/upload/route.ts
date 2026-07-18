@@ -64,17 +64,19 @@ export async function POST(request: Request) {
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
     const contentType = file.type || "image/jpeg";
 
-    // Upload asset to the release
+    // Upload asset to the release using multipart form data (required by GitHub API)
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", new Blob([buffer], { type: contentType }), filename);
+
     const assetRes = await fetch(
       `${uploadUrl}?name=${encodeURIComponent(filename)}`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-          "Content-Type": contentType,
           "X-GitHub-Api-Version": "2022-11-28",
         },
-        body: buffer,
+        body: uploadFormData,
       }
     );
 
