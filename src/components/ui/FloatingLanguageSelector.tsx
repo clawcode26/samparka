@@ -3,11 +3,13 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { Languages } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function FloatingLanguageSelector() {
   const { language, setLanguage } = useLanguage();
   const pathname = usePathname();
+  const widgetInitialized = useRef(false);
+  const scriptInjected = useRef(false);
 
   useEffect(() => {
     // 1. Add Google Translate init callback
@@ -20,15 +22,17 @@ export function FloatingLanguageSelector() {
         },
         "google_translate_element"
       );
+      widgetInitialized.current = true;
     };
 
     // 2. Inject script if not already present
-    if (!document.getElementById("google-translate-script")) {
+    if (!scriptInjected.current && !document.getElementById("google-translate-script")) {
       const script = document.createElement("script");
       script.id = "google-translate-script";
       script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       script.async = true;
       document.body.appendChild(script);
+      scriptInjected.current = true;
     }
 
     // 3. Keep checking if Google combo is loaded and apply the saved language
@@ -36,8 +40,6 @@ export function FloatingLanguageSelector() {
       const googleCombo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
       if (googleCombo) {
         const savedLang = localStorage.getItem("site-language") || "en";
-        // Google combo expects empty string "" or "en" for the default page language.
-        // If savedLang is "or", select "or". If "en", select "" or "en".
         const targetValue = savedLang === "or" ? "or" : "en";
         if (googleCombo.value !== targetValue) {
           googleCombo.value = targetValue;
@@ -47,7 +49,22 @@ export function FloatingLanguageSelector() {
       }
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      // Cleanup: remove Google Translate widget and script on unmount
+      const container = document.getElementById("google_translate_element");
+      if (container) {
+        container.innerHTML = "";
+      }
+      const script = document.getElementById("google-translate-script");
+      if (script) {
+        script.remove();
+        scriptInjected.current = false;
+      }
+      // Reset the global init function so it can be re-initialized
+      (window as any).googleTranslateElementInit = undefined;
+      widgetInitialized.current = false;
+    };
   }, []);
 
   // Listen to global language context change and update Google Translation combo
