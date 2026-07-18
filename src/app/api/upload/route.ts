@@ -12,7 +12,7 @@ function getHeaders() {
   };
 }
 
-async function getOrCreateReleaseId(): Promise<number> {
+async function getOrCreateReleaseId(): Promise<{ releaseId: number; uploadUrl: string }> {
   const owner = process.env.GITHUB_OWNER!;
   const repo = process.env.GITHUB_REPO!;
   const tag = "media-assets";
@@ -25,7 +25,7 @@ async function getOrCreateReleaseId(): Promise<number> {
 
   if (listRes.ok) {
     const release = await listRes.json();
-    return release.id;
+    return { releaseId: release.id, uploadUrl: release.upload_url };
   }
 
   const createRes = await fetch(`${GITHUB_API}/repos/${owner}/${repo}/releases`, {
@@ -46,7 +46,7 @@ async function getOrCreateReleaseId(): Promise<number> {
   }
 
   const release = await createRes.json();
-  return release.id;
+  return { releaseId: release.id, uploadUrl: release.upload_url };
 }
 
 export async function POST(request: Request) {
@@ -57,41 +57,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const owner = process.env.GITHUB_OWNER!;
-    const repo = process.env.GITHUB_REPO!;
-    const releaseId = await getOrCreateReleaseId();
+    const { uploadUrl } = await getOrCreateReleaseId();
     const buffer = Buffer.from(await file.arrayBuffer());
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
     const contentType = file.type || "image/jpeg";
 
-    // Build a proper multipart form body manually
-    const boundary = `----FormBoundary${Date.now()}`;
-    const parts: Buffer[] = [];
+    // upload_url looks like: https://uploads.github.com/repos/{owner}/{repo}/releases/{id}/assets{?name,label}
+    // We need to expand it manually and add the name param
+    const url = uploadUrl.replace("{?name,label}", `?name=${encodeURIComponent(filename)}`);
 
-    // File part
-    parts.push(Buffer.from(
-      `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: ${contentType}\r\n\r\n`
-    ));
-    parts.push(buffer);
-    parts.push(Buffer.from("\r\n"));
-
-    // End boundary
-    parts.push(Buffer.from(`--${boundary}--\r\n`));
-
-    const body = Buffer.concat(parts);
-
-    const assetRes = await fetch(
-      `${GITHUB_API}/repos/${owner}/${repo}/releases/${releaseId}/assets?name=${encodeURIComponent(filename)}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-          "Content-Type": `multipart/form-data; boundary=${boundary}`,
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-        body,
-      }
-    );
+    const assetRes = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        "Content-Type": contentType,
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      body: buffer,
+    });
 
     if (!assetRes.ok) {
       const errText = await assetRes.text();
