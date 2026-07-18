@@ -12,13 +12,12 @@ function getHeaders() {
   };
 }
 
-async function getOrCreateRelease(): Promise<{ uploadUrl: string }> {
+async function getOrCreateReleaseId(): Promise<number> {
   const owner = process.env.GITHUB_OWNER!;
   const repo = process.env.GITHUB_REPO!;
   const tag = "media-assets";
   const headers = getHeaders();
 
-  // Check if release already exists
   const listRes = await fetch(
     `${GITHUB_API}/repos/${owner}/${repo}/releases/tags/${tag}`,
     { headers }
@@ -26,10 +25,9 @@ async function getOrCreateRelease(): Promise<{ uploadUrl: string }> {
 
   if (listRes.ok) {
     const release = await listRes.json();
-    return { uploadUrl: release.upload_url };
+    return release.id;
   }
 
-  // Create the release
   const createRes = await fetch(`${GITHUB_API}/repos/${owner}/${repo}/releases`, {
     method: "POST",
     headers: { ...headers, "Content-Type": "application/json" },
@@ -48,7 +46,7 @@ async function getOrCreateRelease(): Promise<{ uploadUrl: string }> {
   }
 
   const release = await createRes.json();
-  return { uploadUrl: release.upload_url };
+  return release.id;
 }
 
 export async function POST(request: Request) {
@@ -59,23 +57,39 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const { uploadUrl } = await getOrCreateRelease();
-
+    const owner = process.env.GITHUB_OWNER!;
+    const repo = process.env.GITHUB_REPO!;
+    const releaseId = await getOrCreateReleaseId();
     const buffer = Buffer.from(await file.arrayBuffer());
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+    const contentType = file.type || "image/jpeg";
 
-    // GitHub expects raw binary with application/octet-stream content type
-    // and name as a query parameter
+    // Build a proper multipart form body manually
+    const boundary = `----FormBoundary${Date.now()}`;
+    const parts: Buffer[] = [];
+
+    // File part
+    parts.push(Buffer.from(
+      `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: ${contentType}\r\n\r\n`
+    ));
+    parts.push(buffer);
+    parts.push(Buffer.from("\r\n"));
+
+    // End boundary
+    parts.push(Buffer.from(`--${boundary}--\r\n`));
+
+    const body = Buffer.concat(parts);
+
     const assetRes = await fetch(
-      `${uploadUrl}?name=${encodeURIComponent(filename)}`,
+      `${GITHUB_API}/repos/${owner}/${repo}/releases/${releaseId}/assets?name=${encodeURIComponent(filename)}`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-          "Content-Type": "application/octet-stream",
+          "Content-Type": `multipart/form-data; boundary=${boundary}`,
           "X-GitHub-Api-Version": "2022-11-28",
         },
-        body: buffer,
+        body,
       }
     );
 
@@ -86,8 +100,6 @@ export async function POST(request: Request) {
     }
 
     const asset = await assetRes.json();
-
-    // Return a URL that goes through our /api/media/[id] proxy
     const publicUrl = `/api/media/${asset.id}`;
 
     return NextResponse.json({ url: publicUrl });
