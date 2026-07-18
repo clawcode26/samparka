@@ -9,7 +9,7 @@ import { ComingSoon } from "@/components/ui/ComingSoon";
 // ============================================
 // TOGGLE THIS: set to false to bring the site back
 // ============================================
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 
 export default function Home() {
   if (MAINTENANCE_MODE) {

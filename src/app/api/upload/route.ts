@@ -1,13 +1,53 @@
 import { NextResponse } from "next/server";
-import { getAdminDb, getAdminApp } from "@/lib/firebaseAdmin";
-import { getStorage } from "firebase-admin/storage";
-import { initializeApp, getApps, cert } from "firebase-admin/app";
 
-// Ensure admin app is initialised (reuse from firebaseAdmin module)
-function getAdminStorage() {
-  getAdminApp(); // Explicitly initialize the app first
-  const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!;
-  return getStorage().bucket(storageBucket);
+const GITHUB_API = "https://api.github.com";
+
+function getHeaders() {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) throw new Error("GITHUB_TOKEN not configured");
+  return {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+}
+
+async function getOrCreateRelease(): Promise<{ uploadUrl: string; releaseId: number }> {
+  const owner = process.env.GITHUB_OWNER!;
+  const repo = process.env.GITHUB_REPO!;
+  const tag = "media-assets";
+  const headers = getHeaders();
+
+  // Check if release already exists
+  const listRes = await fetch(
+    `${GITHUB_API}/repos/${owner}/${repo}/releases/tags/${tag}`,
+    { headers }
+  );
+
+  if (listRes.ok) {
+    const release = await listRes.json();
+    return { uploadUrl: release.upload_url, releaseId: release.id };
+  }
+
+  // Create the release
+  const createRes = await fetch(`${GITHUB_API}/repos/${owner}/${repo}/releases`, {
+    method: "POST",
+    headers: { ...headers, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tag_name: tag,
+      name: "Media Assets",
+      body: "Auto-created release for storing uploaded images.",
+      draft: false,
+      prerelease: false,
+    }),
+  });
+
+  if (!createRes.ok) {
+    throw new Error(`Failed to create release: ${createRes.statusText}`);
+  }
+
+  const release = await createRes.json();
+  return { uploadUrl: release.upload_url, releaseId: release.id };
 }
 
 export async function POST(request: Request) {
@@ -18,33 +58,36 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    /*
-    // --- GITHUB ASSET UPLOAD PRESERVED FOR FUTURE/REFERENCE ---
-    // The user requested to use Firebase Storage but keep the Github config.
-    const token = process.env.GITHUB_TOKEN;
-    const owner = process.env.GITHUB_OWNER || "sampark-media";
-    const repo = process.env.GITHUB_REPO || "biswabani-assets";
-    
-    // ... Github upload logic ...
-    */
+    const { uploadUrl } = await getOrCreateRelease();
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = `news-images/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+    const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
     const contentType = file.type || "image/jpeg";
 
-    // Upload to Firebase Storage via Admin SDK
-    const bucket = getAdminStorage();
-    const fileRef = bucket.file(filename);
+    // Upload asset to the release
+    const assetRes = await fetch(
+      `${uploadUrl}?name=${encodeURIComponent(filename)}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          "Content-Type": contentType,
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        body: buffer,
+      }
+    );
 
-    await fileRef.save(buffer, {
-      metadata: { contentType },
-    });
+    if (!assetRes.ok) {
+      const errText = await assetRes.text();
+      console.error("GitHub asset upload failed:", errText);
+      throw new Error(`GitHub upload failed: ${assetRes.statusText}`);
+    }
 
-    // Make file publicly readable
-    await fileRef.makePublic();
+    const asset = await assetRes.json();
 
-    // Use the firebasestorage.googleapis.com format — works reliably with all bucket configs
-    const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(filename)}?alt=media`;
+    // Return a URL that goes through our /api/media/[id] proxy
+    const publicUrl = `/api/media/${asset.id}`;
 
     return NextResponse.json({ url: publicUrl });
   } catch (error: any) {

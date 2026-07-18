@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 // ============================================
 // TOGGLE THIS: set to false to bring the site back
 // ============================================
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
