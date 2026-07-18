@@ -69,7 +69,9 @@ export default function ComposeArticle() {
   const [success, setSuccess] = useState("");
   const [lastSaved, setLastSaved] = useState<string | null>(null);
   const [showDraftBanner, setShowDraftBanner] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastContentVersion = useRef<string>("");
 
   // On mount: check if a draft exists and prompt to restore
   useEffect(() => {
