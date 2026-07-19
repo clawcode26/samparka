@@ -78,25 +78,34 @@
 }
 
 .mastheadSide {
-  width: 200px;
+  width: 550px;
   flex-shrink: 0;
-}
-
-.mastheadAdSlot {
-  width: 200px;
-  height: 70px;
-  background: var(--neutral-100);
-  border: 1px dashed var(--neutral-300);
-  border-radius: var(--radius);
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  color: var(--neutral-400);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+}
+.mastheadSide:last-child {
+  justify-content: flex-end;
 }
 
-@media (max-width: 768px) {
-  .mastheadSide { display: none; }
+.mastheadVideo {
+  width: 550px;
+  height: auto;
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: var(--radius);
+}
+
+@media (max-width: 1200px) {
+  .mastheadInner {
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+  .mastheadSide { 
+    width: 100%;
+    justify-content: center !important;
+  }
+  .mastheadVideo {
+    width: 100%;
+    max-width: 550px;
+  }
 }

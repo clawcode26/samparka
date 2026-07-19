@@ -5,17 +5,15 @@ import styles from "./Login.module.css";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-type ViewMode = "signin" | "signup" | "forgot" | "verify";
+type ViewMode = "signin" | "forgot" | "verify";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, role, loading, signIn, signUp, resetPassword, sendVerificationEmail, logout } = useAuth();
+  const { user, role, loading, signIn, resetPassword, sendVerificationEmail, logout } = useAuth();
 
   const [mode, setMode] = useState<ViewMode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [selectedRole, setSelectedRole] = useState<"admin" | "reporter">("reporter");
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -45,12 +43,6 @@ export default function LoginPage() {
     try {
       if (mode === "signin") {
         await signIn(email, password);
-      } else if (mode === "signup") {
-        if (!name.trim()) {
-          throw new Error("Please enter your name");
-        }
-        await signUp(email, password, name, selectedRole);
-        setMode("verify");
       } else if (mode === "forgot") {
         await resetPassword(email);
         setSuccess("Password reset email sent. Please check your inbox.");
@@ -155,38 +147,7 @@ export default function LoginPage() {
         {error && <div className={styles.errorAlert}>{error}</div>}
         {success && <div className={styles.successAlert}>{success}</div>}
 
-        {mode !== "forgot" && (
-          <div className={styles.tabContainer}>
-            <div 
-              className={`${styles.tab} ${mode === "signin" ? styles.tabActive : ""}`} 
-              onClick={() => { setMode("signin"); setError(""); }}
-            >
-              Sign In
-            </div>
-            <div 
-              className={`${styles.tab} ${mode === "signup" ? styles.tabActive : ""}`} 
-              onClick={() => { setMode("signup"); setError(""); }}
-            >
-              Register
-            </div>
-          </div>
-        )}
-
         <form onSubmit={handleSubmit}>
-          {mode === "signup" && (
-            <div className={styles.formGroup}>
-              <label htmlFor="name">Full Name</label>
-              <input
-                id="name"
-                type="text"
-                className={styles.inputField}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your name"
-                required
-              />
-            </div>
-          )}
 
           <div className={styles.formGroup}>
             <label htmlFor="email">Email Address</label>
@@ -216,27 +177,12 @@ export default function LoginPage() {
             </div>
           )}
 
-          {mode === "signup" && (
-            <div className={styles.formGroup}>
-              <label htmlFor="role">Workspace Role</label>
-              <select
-                id="role"
-                className={styles.selectField}
-                value={selectedRole}
-                onChange={(e) => setSelectedRole(e.target.value as "admin" | "reporter")}
-              >
-                <option value="reporter">Reporter</option>
-                <option value="admin">System Admin</option>
-              </select>
-            </div>
-          )}
-
           <button 
             type="submit" 
             className={styles.primaryButton}
             disabled={actionLoading}
           >
-            {actionLoading ? "Processing..." : mode === "signin" ? "Sign In" : mode === "signup" ? "Create Account" : "Reset Password"}
+            {actionLoading ? "Processing..." : mode === "signin" ? "Sign In" : "Reset Password"}
           </button>
         </form>
 
