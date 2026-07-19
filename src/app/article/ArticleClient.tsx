@@ -12,6 +12,7 @@ import { fetchArticleById, fetchArticles, incrementViewCount, Article } from "@/
 import styles from "./Article.module.css";
 import Link from "next/link";
 import { Eye, Share2, Tag } from "lucide-react";
+import { TranslateFix } from "@/components/ui/TranslateFix";
 
 export function ArticleClient({ initialArticle }: { initialArticle: Article | null }) {
   const searchParams = useSearchParams();
@@ -139,10 +140,10 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
               </div>
 
               <h1 className={styles.headline}>
-                {article.title}
+                <TranslateFix text={article.title} />
               </h1>
               <p className={styles.deck}>
-                {article.excerpt}
+                <TranslateFix text={article.excerpt} />
               </p>
               
               <div className={styles.metaRow}>
@@ -245,7 +246,9 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
                     <div key={item.id} className={styles.relatedItem}>
                       <span className={styles.relatedCategory}>{item.category}</span>
                       <h4 className={styles.relatedTitle}>
-                        <Link href={`/article?id=${item.id}`}>{item.title}</Link>
+                        <Link href={`/article?id=${item.id}`}>
+                          <TranslateFix text={item.title} />
+                        </Link>
                       </h4>
                       <span className={styles.relatedMeta}>
                         {new Date(item.publishedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./HeroSection.module.css";
 import Link from "next/link";
 import { fetchArticles, Article } from "@/lib/articleService";
+import { TranslateFix } from "@/components/ui/TranslateFix";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Tag, TrendingUp, Calendar, Eye, Pin, ArrowRight, Share2 } from "lucide-react";
 
@@ -121,8 +122,10 @@ export function HeroSection() {
                           <span className={styles.heroCategoryDot}></span>
                           <span className={styles.heroCategory}>{heroArticle.category}</span>
                         </div>
-                        <h2 className={styles.heroTitle}>
-                          <Link href={`/article?id=${heroArticle.id}`}>{heroArticle.title}</Link>
+                        <h2 className={styles.heroHeadline} style={{ marginBottom: "var(--space-12)", fontSize: "28px" }}>
+                          <Link href={`/article?id=${heroArticle.id}`}>
+                            <TranslateFix text={heroArticle.title} />
+                          </Link>
                         </h2>
                       </div>
                     </div>
@@ -136,9 +139,11 @@ export function HeroSection() {
                         )}
                         <span>{heroArticle.category}</span>
                       </div>
-                      <h2 style={{ fontSize: "28px", fontWeight: 700, fontFamily: "var(--font-heading), serif", lineHeight: 1.2, marginBlock: "8px" }}>
-                        <Link href={`/article?id=${heroArticle.id}`} style={{ color: "var(--neutral-900)", textDecoration: "none" }}>{heroArticle.title}</Link>
-                      </h2>
+                      <h3 style={{ fontSize: "16px", lineHeight: "1.4", marginBlock: "8px" }}>
+                        <Link href={`/article?id=${heroArticle.id}`} style={{ color: "var(--neutral-900)", textDecoration: "none" }}>
+                          <TranslateFix text={heroArticle.title} />
+                        </Link>
+                      </h3>
                     </div>
                   )}
                   <p className={styles.heroDeck}>{heroArticle.excerpt}</p>
@@ -177,8 +182,10 @@ export function HeroSection() {
                   <article key={i} className={styles.sideListCard}>
                     <div className={styles.sideListContent}>
                       <div className={styles.subCategory}>{a.category}</div>
-                      <h3 className={styles.sideListTitle}>
-                        <Link href={`/article?id=${a.id}`}>{a.title}</Link>
+                      <h3 className={styles.sideItemHeadline} style={{ fontSize: "14px" }}>
+                        <Link href={`/article?id=${a.id}`}>
+                          <TranslateFix text={a.title} />
+                        </Link>
                       </h3>
                       
                       {/* Tags */}
@@ -225,7 +232,9 @@ export function HeroSection() {
                   )}
                   <div className={`premiumCardBody ${getCategoryTheme(a.category)}`}>
                     <span className="premiumPill">{a.category}</span>
-                    <h3 className="premiumCardTitle" style={{ fontSize: "15px" }}>{a.title}</h3>
+                    <h3 className="premiumCardTitle" style={{ fontSize: "15px" }}>
+                      <TranslateFix text={a.title} />
+                    </h3>
                     <p className="premiumCardDeck" style={{ fontSize: "12px", WebkitLineClamp: 3, display: "-webkit-box", WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {a.excerpt}
                     </p>
@@ -283,9 +292,11 @@ export function HeroSection() {
               <div key={item.id} className={styles.trendingItem}>
                 <div className={styles.trendingNumber}>{String(idx + 1).padStart(2, "0")}</div>
                 <div className={styles.trendingContent}>
-                  <div className={styles.trendingHeadline}>
-                    <Link href={`/article?id=${item.id}`}>{item.title}</Link>
-                  </div>
+                  <h4 style={{ fontSize: "14px", lineHeight: 1.4, color: "var(--neutral-900)", marginBottom: "4px" }}>
+                    <Link href={`/article?id=${item.id}`}>
+                      <TranslateFix text={item.title} />
+                    </Link>
+                  </h4>
                   <div className={styles.trendingMeta} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                     <span>{item.category}</span>
                     <span>·</span>

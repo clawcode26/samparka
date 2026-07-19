@@ -11,6 +11,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { fetchArticlesByCategory, Article } from "@/lib/articleService";
 import Link from "next/link";
 import { ArrowRight, Newspaper, Rss, Share2 } from "lucide-react";
+import { TranslateFix } from "@/components/ui/TranslateFix";
 
 const CATEGORY_MAP: Record<string, string> = {
   odisha: "State Affairs",
@@ -175,8 +176,8 @@ export default function CategoryPage() {
                         )}
                         <div className={`premiumCardBody ${getCategoryTheme(article.category)}`}>
                           <span className="premiumPill">{article.category}</span>
-                          <h3 className="premiumCardTitle">{article.title}</h3>
-                          <p className="premiumCardDeck">{article.excerpt}</p>
+                          <h3 className="premiumCardTitle"><TranslateFix text={article.title} /></h3>
+                          <p className="premiumCardDeck"><TranslateFix text={article.excerpt} /></p>
                           
                           {article.tags && article.tags.length > 0 && (
                             <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "auto" }} translate="no" className="notranslate">
@@ -227,8 +228,8 @@ export default function CategoryPage() {
                       <Link href={`/article?url=${encodeURIComponent(item.link)}`} key={index} className="premiumCard">
                         <div className={`premiumCardBody ${getCategoryTheme(categoryName)}`}>
                           <span className="premiumPill">{categoryName}</span>
-                          <h3 className="premiumCardTitle">{item.title}</h3>
-                          <p className="premiumCardDeck">{item.description}</p>
+                          <h3 className="premiumCardTitle"><TranslateFix text={item.title} /></h3>
+                          <p className="premiumCardDeck"><TranslateFix text={item.description} /></p>
                         </div>
                         <div className="premiumCardFooter">
                           <span style={{ fontSize: "12px", color: "var(--text-light)" }}>External Wire</span>

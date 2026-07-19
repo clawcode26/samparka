@@ -1,6 +1,7 @@
 import styles from "./ArticleGrid.module.css";
 import Link from "next/link";
 import { Share2, Tag } from "lucide-react";
+import { TranslateFix } from "@/components/ui/TranslateFix";
 
 const mainArticles = [
   {
@@ -78,7 +79,9 @@ function ArticleCard({ article }: { article: typeof mainArticles[0] }) {
       <img src={article.img} alt={article.title} className={styles.articleImage} />
       <div className={styles.articleCategory}>{article.category}</div>
       <h3 className={styles.articleTitle}>
-        <Link href="/article">{article.title}</Link>
+        <Link href="/article">
+          <TranslateFix text={article.title} />
+        </Link>
       </h3>
       <div className={styles.articleMeta} style={{ marginBottom: "12px" }}>
         <span className={styles.articleAuthor}>{article.author}</span>
