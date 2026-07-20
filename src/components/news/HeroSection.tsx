@@ -122,7 +122,7 @@ export function HeroSection() {
                           <span className={styles.heroCategoryDot}></span>
                           <span className={styles.heroCategory}>{heroArticle.category}</span>
                         </div>
-                        <h2 className={styles.heroHeadline} style={{ marginBottom: "var(--space-12)", fontSize: "28px" }}>
+                        <h2 className={styles.heroTitle} style={{ marginBottom: "var(--space-12)", fontSize: "28px" }}>
                           <Link href={`/article?id=${heroArticle.id}`}>
                             <TranslateFix text={heroArticle.title} />
                           </Link>

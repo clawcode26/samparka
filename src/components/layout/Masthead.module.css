@@ -15,7 +15,7 @@
 
 .mastheadCenter {
   text-align: center;
-  flex: 1;
+  flex: 0 auto;
 }
 
 .mastheadLogo {
@@ -78,8 +78,7 @@
 }
 
 .mastheadSide {
-  width: 550px;
-  flex-shrink: 0;
+  flex: 1;
   display: flex;
   align-items: center;
 }
@@ -88,7 +87,8 @@
 }
 
 .mastheadVideo {
-  width: 550px;
+  width: 100%;
+  max-width: 350px;
   height: auto;
   max-height: 250px;
   object-fit: contain;
@@ -107,5 +107,18 @@
   .mastheadVideo {
     width: 100%;
     max-width: 550px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mastheadInner {
+    flex-direction: row;
+    gap: var(--space-8);
+  }
+  .mastheadSide {
+    width: auto;
+  }
+  .mastheadVideo {
+    max-width: 80px;
   }
 }
