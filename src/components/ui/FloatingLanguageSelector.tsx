@@ -93,24 +93,7 @@ export function FloatingLanguageSelector() {
       {/* Hidden google translate container required by the script */}
       <div id="google_translate_element" style={{ display: "none" }} />
       
-      <div 
-        style={{
-          position: "fixed",
-          bottom: "24px",
-          right: "24px",
-          zIndex: 9999,
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          backgroundColor: "#ffffff",
-          border: "1px solid rgba(0,0,0,0.08)",
-          borderRadius: "9999px",
-          boxShadow: "0 8px 30px rgba(0, 0, 0, 0.08)",
-          padding: "6px 12px",
-          transition: "transform 150ms ease"
-        }}
-        className="floating-translate-bar skiptranslate"
-      >
+      <div className="floating-translate-bar skiptranslate">
         <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--neutral-700)", display: "flex", alignItems: "center", gap: "4px" }}>
           <Languages size={14} style={{ color: "var(--brand-color)" }} /> Translate:
         </span>

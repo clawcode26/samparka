@@ -212,6 +212,7 @@ export function HeroSection() {
                         src={a.imageUrl} 
                         alt={a.title} 
                         className={styles.sideListImage} 
+                        loading="lazy"
                       />
                     )}
                   </article>
@@ -228,6 +229,7 @@ export function HeroSection() {
                       src={a.imageUrl} 
                       alt={a.title}
                       className="premiumCardImage"
+                      loading="lazy"
                     />
                   )}
                   <div className={`premiumCardBody ${getCategoryTheme(a.category)}`}>

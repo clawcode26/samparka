@@ -5,7 +5,7 @@ import styles from "../Dashboard.module.css";
 import Link from "next/link";
 import { Plus, Edit2, Trash, Eye } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { fetchArticles, deleteArticle, Article } from "@/lib/articleService";
+import { fetchMyArticles, deleteArticle, Article } from "@/lib/articleService";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 export default function ReporterDashboard() {
@@ -16,9 +16,8 @@ export default function ReporterDashboard() {
   useEffect(() => {
     async function loadData() {
       try {
-        const allArticles = await fetchArticles();
-        // Filter articles belonging to current logged-in reporter
-        const myArticles = allArticles.filter(a => a.authorEmail === user?.email);
+        if (!user?.email) return;
+        const myArticles = await fetchMyArticles(user.email);
         setArticles(myArticles);
       } catch (err) {
         console.error("Failed to load reporter articles:", err);

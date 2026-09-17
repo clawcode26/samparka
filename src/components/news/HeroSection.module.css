@@ -347,14 +347,14 @@
 
 .weatherTemp {
   font-family: var(--font-heading), serif;
-  font-size: 48px;
+  font-size: 44px;
   font-weight: 700;
   line-height: 1;
   color: #fff;
 }
 
 .weatherUnit {
-  font-size: 24px;
+  font-size: 22px;
   color: var(--neutral-400);
 }
 
@@ -364,9 +364,11 @@
   margin-top: var(--space-8);
 }
 
-@media (max-width: 900px) {
+/* ─── RESPONSIVE BREAKPOINTS ─── */
+@media (max-width: 1024px) {
   .heroGrid {
     grid-template-columns: 1fr;
+    gap: var(--space-32);
   }
   .rightCol {
     border-left: none;
@@ -375,15 +377,32 @@
     padding-top: var(--space-24);
   }
   .topSection {
-    grid-template-columns: 1fr;
-  }
-  .subGrid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.4fr 1fr;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  .topSection {
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+  }
+  .subGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .heroOverlayText {
+    padding: var(--space-16);
+  }
+}
+
+@media (max-width: 600px) {
   .subGrid {
     grid-template-columns: 1fr;
+  }
+  .sideListCard {
+    grid-template-columns: 1fr 84px;
+    padding: var(--space-12) 0;
+  }
+  .heroImageCard {
+    aspect-ratio: 16/10;
   }
 }

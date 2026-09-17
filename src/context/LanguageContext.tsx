@@ -18,12 +18,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem("site-language") as Language;
     if (saved === "en" || saved === "or") {
       setLanguageState(saved);
+      document.documentElement.setAttribute("data-lang", saved);
+    } else {
+      document.documentElement.setAttribute("data-lang", "en");
     }
   }, []);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("site-language", lang);
+    document.documentElement.setAttribute("data-lang", lang);
   };
 
   return (

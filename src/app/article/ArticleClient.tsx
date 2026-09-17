@@ -11,7 +11,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { fetchArticleById, fetchArticles, incrementViewCount, Article } from "@/lib/articleService";
 import styles from "./Article.module.css";
 import Link from "next/link";
-import { Eye, Share2, Tag } from "lucide-react";
+import { Eye, Share2, Tag, Check } from "lucide-react";
 import { TranslateFix } from "@/components/ui/TranslateFix";
 
 export function ArticleClient({ initialArticle }: { initialArticle: Article | null }) {
@@ -22,6 +22,7 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
   const [article, setArticle] = useState<Article | null>(initialArticle);
   const [related, setRelated] = useState<Article[]>([]);
   const [loading, setLoading] = useState(!initialArticle);
+  const [copied, setCopied] = useState(false);
   // Local view count shown immediately (optimistic +1)
   const [viewCount, setViewCount] = useState<number | null>(null);
 
@@ -189,14 +190,23 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
                         console.error("Error sharing:", err);
                       }
                     } else {
-                      navigator.clipboard.writeText(shareUrl);
-                      alert("Article link copied to clipboard!");
+                      await navigator.clipboard.writeText(shareUrl);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
                     }
                   }}
                   translate="no"
-                  style={{ border: "none", background: "var(--neutral-100)", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", padding: "6px 12px", borderRadius: "9999px", color: "var(--neutral-800)", fontSize: "12px", fontWeight: 600 }}
+                  style={{ border: "1px solid var(--border-color)", background: copied ? "var(--brand-light)" : "var(--neutral-100)", display: "inline-flex", alignItems: "center", gap: "6px", cursor: "pointer", padding: "8px 16px", borderRadius: "9999px", color: copied ? "var(--brand-color)" : "var(--neutral-800)", fontSize: "12px", fontWeight: 600, transition: "all 150ms ease-out" }}
                 >
-                  <Share2 size={14} style={{ color: "var(--brand-color)" }} /> Share Article Link
+                  {copied ? (
+                    <>
+                      <Check size={14} style={{ color: "var(--brand-color)" }} /> Link Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Share2 size={14} style={{ color: "var(--brand-color)" }} /> Share Article Link
+                    </>
+                  )}
                 </button>
               </div>
 
@@ -213,7 +223,7 @@ export function ArticleClient({ initialArticle }: { initialArticle: Article | nu
               {/* Render dynamic HTML content safely */}
               <div 
                 className={styles.articleBody}
-                dangerouslySetInnerHTML={{ __html: article.content.replace(/ବୌଦ୍ଧ/g, '<span class="boudh-wrapper"><span class="odia-text">ବୌଦ୍ଧ</span><span class="eng-text" translate="no">Boudh</span></span>') }}
+                dangerouslySetInnerHTML={{ __html: article.content.replace(/(ବୌଦ୍ଧ|Boudh)/gi, '<span class="boudh-wrapper" translate="no"><span class="odia-text">ବୌଦ୍ଧ</span><span class="eng-text">Boudh</span></span>') }}
               />
 
               {/* Tag display under the story */}

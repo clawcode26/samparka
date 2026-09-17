@@ -26,6 +26,7 @@ export interface Article {
   authorEmail: string;
   publishedAt: string;
   reads: number;
+  status?: "draft" | "published";
 }
 
 const articlesCollection = collection(db, "articles");
@@ -40,6 +41,20 @@ export async function fetchArticles(): Promise<Article[]> {
     })) as Article[];
   } catch (error) {
     console.error("Error fetching articles:", error);
+    return [];
+  }
+}
+
+export async function fetchMyArticles(authorEmail: string): Promise<Article[]> {
+  try {
+    const q = query(articlesCollection, where("authorEmail", "==", authorEmail), orderBy("publishedAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as Article[];
+  } catch (error) {
+    console.error("Error fetching my articles:", error);
     return [];
   }
 }
@@ -98,7 +113,7 @@ export async function createArticle(article: Omit<Article, "id" | "reads">): Pro
     ...article,
     tags: article.tags.map(t => t.toLowerCase().trim()),
     reads: 0,
-    publishedAt: new Date().toISOString()
+    publishedAt: article.publishedAt || new Date().toISOString()
   });
   return docRef.id;
 }

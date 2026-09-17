@@ -67,6 +67,14 @@
   gap: var(--space-8);
 }
 
+@media (max-width: 640px) {
+  .footerLinks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8) var(--space-16);
+  }
+}
+
 .footerLinks a {
   font-size: 13px;
   color: var(--neutral-400);
@@ -87,6 +95,7 @@
 
 @media (max-width: 768px) {
   .footerGrid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    gap: var(--space-32);
   }
 }

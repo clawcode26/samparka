@@ -37,6 +37,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(currentUser);
       if (currentUser) {
         try {
+          // Force refresh to get latest custom claims
+          await currentUser.getIdToken(true);
+          
           const userDoc = await getDoc(doc(db, "users", currentUser.uid));
           if (userDoc.exists()) {
             setRole(userDoc.data().role as "admin" | "reporter");
@@ -85,6 +88,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Send verification email
       await sendEmailVerification(currentUser);
+      
+      // Force token refresh to get custom claims set by Cloud Function
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await currentUser.getIdToken(true);
       
       setUser(currentUser);
       setRole(selectedRole);

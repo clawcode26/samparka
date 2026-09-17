@@ -12,8 +12,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px var(--space-24);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 6px var(--space-24);
+  gap: var(--space-12);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .topRowInner {
+    padding: 6px var(--space-16);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .topRowInner::-webkit-scrollbar {
+    display: none;
+  }
+  .topBarDate {
+    font-size: 10.5px;
+  }
+  .topBarRight {
+    gap: var(--space-12);
+  }
 }
 
 .topBarDate {
@@ -27,6 +46,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-16);
+  white-space: nowrap;
 }
 
 .topBarLink {

@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return getUserRole() == 'admin';
+    }
+
+    function isReporter() {
+      return getUserRole() == 'reporter';
+    }
+
+    match /users/{uid} {
+      allow read: if isAuth() && request.auth.uid == uid;
+      allow create: if isAuth() && request.auth.uid == uid;
+      allow update: if isAuth() && request.auth.uid == uid;
+      allow delete: if false;
+    }
+
+    match /articles/{articleId} {
+      // Anyone can read articles
+      allow read: if true;
+      
+      // Admin can read all articles
+      allow read: if isAuth() && isAdmin();
+
+      // Reporter can read own articles
+      allow read: if isAuth() && isReporter() && resource.data.authorEmail == request.auth.token.email;
+
+      // Reporter create articles
+      allow create: if isAuth() && isReporter() &&
+        request.resource.data.authorEmail == request.auth.token.email;
+
+      // Reporter update own articles
+      allow update: if isAuth() && isReporter() &&
+        resource.data.authorEmail == request.auth.token.email;
+
+      // Reporter delete own articles
+      allow delete: if isAuth() && isReporter() &&
+        resource.data.authorEmail == request.auth.token.email;
+
+      // Admin can do anything
+      allow update: if isAuth() && isAdmin();
+      allow delete: if isAuth() && isAdmin();
+    }
+
+    match /grievances/{grievanceId} {
+      allow create: if request.resource.data.status == 'pending' &&
+        request.resource.data.message.size() > 20;
+
+      allow read: if isAuth() && isAdmin();
+      allow update: if isAuth() && isAdmin();
+      allow delete: if false;
+    }
+
+    match /adminLogs/{logId} {
+      allow create: if isAuth() && isAdmin();
+      allow read: if isAuth() && isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

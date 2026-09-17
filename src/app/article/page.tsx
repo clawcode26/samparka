@@ -33,10 +33,10 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
         return {
           title: `${article.title} | Samparka`,
-          description: article.excerpt || "Read the full story on Samparka.",
+          description: "",
           openGraph: {
             title: article.title,
-            description: article.excerpt || "Read the full story on Samparka.",
+            description: "",
             url: `https://www.samparka.online/article?id=${id}`,
             siteName: "Samparka",
             images: [
@@ -52,7 +52,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
           twitter: {
             card: "summary_large_image",
             title: article.title,
-            description: article.excerpt || "Read the full story on Samparka.",
+            description: "",
             images: [absoluteImage],
           },
         };

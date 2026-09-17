@@ -60,6 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-lang="en"
       className={`${playfair.variable} ${sourceSerif.variable} ${notoSansOriya.variable}`}
       suppressHydrationWarning
       data-scroll-behavior="smooth"

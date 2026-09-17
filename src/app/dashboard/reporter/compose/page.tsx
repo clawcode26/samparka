@@ -191,7 +191,7 @@ export default function ComposeArticle() {
       });
 
       clearDraft(); // Clean up the draft after successful publish
-      setSuccess("Article submitted successfully for review!");
+      setSuccess("Article published successfully!");
       setTimeout(() => {
         router.push("/dashboard/reporter");
       }, 1500);

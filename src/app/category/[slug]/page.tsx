@@ -130,10 +130,10 @@ export default function CategoryPage() {
           
           {/* Category Header */}
           <header style={{ borderBottom: "2px solid var(--neutral-900)", paddingBottom: "var(--space-12)", marginBottom: "var(--space-32)" }}>
-            <h1 style={{ fontFamily: "var(--font-heading), serif", fontSize: "36px", textTransform: "capitalize", color: "var(--neutral-900)" }}>
+            <h1 style={{ fontFamily: "var(--font-heading), serif", fontSize: "clamp(26px, 5vw, 36px)", textTransform: "capitalize", color: "var(--neutral-900)" }}>
               {categoryName} News
             </h1>
-            <p style={{ fontSize: "14px", color: "var(--text-light)", marginTop: "4px" }}>
+            <p style={{ fontSize: "13.5px", color: "var(--text-light)", marginTop: "4px" }}>
               Latest coverage and syndicated feeds for {categoryName}.
             </p>
           </header>
@@ -161,10 +161,10 @@ export default function CategoryPage() {
               {/* ── SECTION 1: Local Reporter News ── */}
               {articles.length > 0 && (
                 <div>
-                  <h2 style={{ fontSize: "14px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--brand-color)", display: "flex", alignItems: "center", gap: "8px", borderBottom: "1px solid var(--border-color)", paddingBottom: "8px", marginBottom: "24px" }}>
+                  <h2 style={{ fontSize: "13px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--brand-color)", display: "flex", alignItems: "center", gap: "8px", borderBottom: "1px solid var(--border-color)", paddingBottom: "8px", marginBottom: "20px" }}>
                     <Newspaper size={16} /> Reporter News
                   </h2>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "var(--space-24)" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "var(--space-20)" }}>
                     {articles.map((article) => (
                       <Link href={`/article?id=${article.id}`} key={article.id} className="premiumCard">
                         {article.imageUrl && (
@@ -172,6 +172,7 @@ export default function CategoryPage() {
                             src={article.imageUrl} 
                             alt={article.title}
                             className="premiumCardImage"
+                            loading="lazy"
                           />
                         )}
                         <div className={`premiumCardBody ${getCategoryTheme(article.category)}`}>
@@ -223,7 +224,7 @@ export default function CategoryPage() {
                   <h2 style={{ fontSize: "14px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--neutral-700)", display: "flex", alignItems: "center", gap: "8px", borderBottom: "1px solid var(--border-color)", paddingBottom: "8px", marginBottom: "24px" }}>
                     <Rss size={16} /> Latest Wire Updates
                   </h2>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "var(--space-24)" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "var(--space-20)" }}>
                     {feedItems.map((item, index) => (
                       <Link href={`/article?url=${encodeURIComponent(item.link)}`} key={index} className="premiumCard">
                         <div className={`premiumCardBody ${getCategoryTheme(categoryName)}`}>
